@@ -3,7 +3,9 @@
 @section('title', 'Kategori')
 
 @section('content')
+
 @include('style')
+@push('style')  
 <style>
 .btn-custom {
     background-color: #007bff; 
@@ -30,6 +32,8 @@
     opacity: 1 !important;
 }
 </style>
+@endpush
+
 <div class="container">
 <div class="card table-container">
     @if(session('success'))
@@ -65,17 +69,17 @@
 </button> 
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover" id="kategoriTable">
+                <table class="table">
                     <thead>
-                        <tr class="text-center">
+                        <tr>
                             <th>ID</th>
                             <th>Nama Kategori</th>
-                            <th class="text-center">Aksi</th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($kategori as $kat)
-                        <tr class="text-center" id="row-{{ $kat->id }}">
+                        @foreach($kategori as $kat)
+                        <tr id="row-{{ $kat->id }}">
                             <td>{{ $kat->id }}</td>
                             <td>{{ $kat->nama_kategori }}</td>
                             <td class="text-center">
@@ -84,7 +88,7 @@
                                 </button>
                             </td>
                         </tr>
-                        @endforeach                                       
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -106,7 +110,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="nama_kategori">Nama Kategori</label>
-                        <input type="text" name="nama_kategori" class="form-control" required>
+                        <input type="text" name="nama_kategori" placeholder="Masukkan Nama Kategori" class="form-control" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -118,19 +122,20 @@
     </div>
 </div>
 @endsection
-@section('scripts')
+
+@push('script')
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script>
 $(document).ready(function() {
     console.log("✅ JavaScript Loaded!");
 
-    $('.hapusKategori').click(function(event) {
+    $(document).on('click', '.hapusKategori', function(event) {
         event.preventDefault();
 
         let kategoriId = $(this).data('id');
-        let token = $('meta[name="csrf-token"]').attr('content'); // Ambil CSRF token dari meta tag
+        let token = $('meta[name="csrf-token"]').attr('content');
 
         Swal.fire({
             title: 'Apakah Anda yakin?',
@@ -150,26 +155,17 @@ $(document).ready(function() {
                         _token: token
                     },
                     success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 2000
-                            });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Dihapus!',
+                            text: 'Kategori berhasil dihapus.',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
 
-                            // Hapus baris kategori dari tabel tanpa reload halaman
-                            $("#row-" + kategoriId).fadeOut(500);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 2000
-                            });
-                        }
+                        $("#row-" + kategoriId).fadeOut(500, function() {
+                            $(this).remove();
+                        });
                     },
                     error: function(xhr) {
                         Swal.fire({
@@ -186,5 +182,8 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+    
+@endpush
+
+
 

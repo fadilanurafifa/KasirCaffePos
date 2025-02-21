@@ -14,26 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
+          // Tambah akun admin
+          User::create([
             'name' => 'Admin',
-            'email' => 'admin@kasir.com',
+            'email' => 'admin@caffe.com',
             'password' => Hash::make('password'),
+            'role' => 'admin'
         ]);
 
-        // User::create([
-        //     'username' => 'kasir01',
-        //     'password' => Hash::make('password123'),
-        //     'role' => 'kasir',
-        //     'nama_lengkap' => 'Kasir Toko',
-        //     'email' => 'kasir@example.com'
-        // ]);
-
-        // User::create([
-        //     'username' => 'manajer01',
-        //     'password' => Hash::make('password123'),
-        //     'role' => 'manajer',
-        //     'nama_lengkap' => 'Manajer Bisnis',
-        //     'email' => 'manajer@example.com'
-        // ]);
+        // Tambah akun kasir
+        User::create([
+            'name' => 'Kasir',
+            'email' => 'kasir@caffe.com',
+            'password' => Hash::make('password'),
+            'role' => 'kasir'
+        ]);
     }
 }

@@ -2,62 +2,97 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use App\Models\Produk;
+use Illuminate\Support\Facades\Storage;
 
 class ProdukController extends Controller
 {
     // Menampilkan daftar produk
-    public function index()
-    {
-        $produk = Produk::all();
-        return view('admin.produk.index', compact('produk')); // Pastikan path sesuai
-    }    
+    public function index(Request $request) 
+{
+    $kategori = Kategori::all(); // Ambil semua kategori
 
-    // Menampilkan halaman tambah produk
-    public function create()
-    {
-        return view('admin.produk.create'); // Sesuaikan path view
-    }
+    $produk = Produk::with('kategori') // Pastikan relasi kategori dimuat
+        ->when($request->kategori_id, function ($query) use ($request) {
+            return $query->where('kategori_id', $request->kategori_id);
+        })
+        ->get();
 
-    // Menyimpan produk baru ke database
+    return view('admin.produk.index', compact('produk', 'kategori'));
+}
+
     public function store(Request $request)
     {
         $request->validate([
-            'nama_produk' => 'required|max:100'
+            'nama_produk' => 'required|string|max:255',
+            'harga' => 'required|numeric',
+            'foto' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048',
+            'kategori_id' => 'nullable|exists:kategori,id',
         ]);
+       
+        Produk::create($request->all());
 
-        Produk::create([
-            'nama_produk' => $request->nama_produk
-        ]);
-
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan!');
-    }
-
-    // Menampilkan halaman edit produk
-    public function edit(Produk $produk)
-    {
-        return view('admin.produk.edit', compact('produk')); // Pastikan path sesuai
-    }
-
-    // Update data produk di database
-    public function update(Request $request, Produk $produk)
+        // Menangani upload foto
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $fileName = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('assets/produk_fotos'), $fileName);
+            Produk::create([
+                'nama_produk' => $request->nama_produk,
+                'harga' => $request->harga, 
+                'foto' => $fileName,
+            ]);
+        }
+    
+    
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil ditambahkan');
+    }    
+    public function update(Request $request, $id)
     {
         $request->validate([
-            'nama_produk' => 'required|max:100'
+            'nama_produk' => 'required|string|max:255',
+            'harga' => 'required|numeric',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
         ]);
-
-        $produk->update([
-            'nama_produk' => $request->nama_produk
-        ]);
-
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui!');
+    
+        $produk = Produk::find($id);
+        $produk->nama_produk = $request->nama_produk;
+        $produk->harga = $request->harga;
+    
+        // Menangani update foto jika ada
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($produk->foto) {
+                Storage::delete('public/foto_produk/' . $produk->foto);
+            }
+    
+            $file = $request->file('foto');
+            $path = $file->store('public/foto_produk');
+            $produk->foto = basename($path); // Menyimpan nama file foto
+        }
+    
+        $produk->save();
+    
+        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil diperbarui');
     }
+    
 
-    // Hapus produk dari database
-    public function destroy(Produk $produk)
+    public function destroy($id)
     {
+        $produk = Produk::findOrFail($id);
+
+        // Hapus foto produk jika ada
+        if ($produk->foto) {
+            Storage::delete('public/' . $produk->foto);
+        }
+
         $produk->delete();
-        return redirect()->route('admin.produk.index')->with('success', 'Produk berhasil dihapus!');
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Produk berhasil dihapus!'
+        ]);
     }
 }

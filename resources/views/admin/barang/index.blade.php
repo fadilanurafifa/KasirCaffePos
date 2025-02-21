@@ -4,6 +4,7 @@
 
 @section('content')
 @include('style')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
 .btn-custom {
@@ -73,11 +74,9 @@
                 <table class="table table-bordered table-striped table-hover" id="barangTable">
                     <thead>
                         <tr class="text-center">
-                            {{-- <th>ID</th> --}}
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Produk</th>
-                            {{-- <th>Kategori</th> --}}
                             <th>Satuan</th>
                             <th>Harga Jual</th>
                             <th>Stok</th>
@@ -87,18 +86,16 @@
                     <tbody>
                         @foreach ($barang as $brg)
                         <tr class="text-center" id="row-{{ $brg->id }}">
-                            {{-- <td>{{ $brg->id }}</td> --}}
                             <td>{{ $brg->kode_barang }}</td>
                             <td>{{ $brg->nama_barang }}</td>
                             <td>{{ $brg->produk->nama_produk ?? 'Tidak Ada' }}</td>
-                            {{-- <td>{{ $brg->kategori->nama_kategori ?? 'Tidak Ada' }}</td> --}}
                             <td>{{ $brg->satuan }}</td>
                             <td>Rp {{ number_format($brg->harga_jual, 0, ',', '.') }}</td>
                             <td>{{ $brg->stok }}</td>
                             <td class="text-center">
                                 <button class="btn btn-danger btn-sm hapusBarang" data-id="{{ $brg->id }}">
                                     <i class="fas fa-trash"></i> Hapus
-                                </button>
+                                </button>                            
                             </td>
                         </tr>
                         @endforeach                                       
@@ -111,7 +108,7 @@
 
 <!-- Modal Tambah Barang -->
 <div class="modal fade" id="tambahBarangModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg"> <!-- Tambah modal-lg untuk memperlebar modal -->
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Barang</h5>
@@ -137,10 +134,10 @@
                                 @endforeach
                             </select>                            
                         </div>                        
-                        
+
                         <div class="form-group">
                             <label>Nama Barang</label>
-                            <input type="text" name="nama_barang" class="form-control" required>
+                            <input type="text" name="nama_barang" placeholder="Masukkan Nama Barang" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
@@ -148,19 +145,22 @@
                             <select name="satuan" class="form-control">
                                 <option value="Liter">Liter</option>
                                 <option value="Gram">Gram</option>
+                                <option value="Kilogram">Kilogram</option>
                                 <option value="Pcs">Pcs</option>
                                 <option value="Botol">Botol</option>
+                                <option value="Dus">Dus</option>
+                                <option value="Lusin">Lusin</option>
                             </select>
                         </div>
                         
                         <div class="form-group">
                             <label>Harga Jual</label>
-                            <input type="number" name="harga_jual" class="form-control" required>
+                            <input type="number" name="harga_jual" placeholder="Masukkan Harga Jual" class="form-control" required>
                         </div>
                         
                         <div class="form-group">
                             <label>Stok</label>
-                            <input type="number" name="stok" class="form-control" required>
+                            <input type="number" name="stok" placeholder="Masukkan Stok" class="form-control" required>
                         </div>
                     </div>
                 </div>
@@ -174,19 +174,20 @@
 </div>
 @endsection
 
-@section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@push('script')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
     console.log("✅ JavaScript Loaded!");
 
-    $('.hapusBarang').click(function(event) {
+    $(document).on('click', '.hapusBarang', function(event) {
         event.preventDefault();
 
         let barangId = $(this).data('id');
-        let token = $('meta[name="csrf-token"]').attr('content'); 
+        let token = $('meta[name="csrf-token"]').attr('content');
+
+        console.log("🟡 Klik tombol hapus! ID:", barangId);
 
         Swal.fire({
             title: 'Apakah Anda yakin?',
@@ -199,41 +200,31 @@ $(document).ready(function() {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                console.log("🔵 Mengirim AJAX DELETE ke server...");
+
                 $.ajax({
                     url: '/admin/barang/' + barangId,
-                    type: 'DELETE',
+                    type: 'POST',
                     data: {
+                        _method: 'DELETE',
                         _token: token
                     },
                     success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sukses!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 2000
-                            });
+                        console.log("✅ Response dari server:", response);
 
-                            $("#row-" + barangId).fadeOut(500);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal!',
-                                text: response.message,
-                                showConfirmButton: false,
-                                timer: 2000
+                        if (response.status === 'success') {
+                            Swal.fire('Sukses!', response.message, 'success');
+
+                            $("#row-" + barangId).fadeOut(500, function() {
+                                $(this).remove();
                             });
+                        } else {
+                            Swal.fire('Gagal!', response.message, 'error');
                         }
                     },
                     error: function(xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal!',
-                            text: 'Terjadi kesalahan saat menghapus barang.',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
+                        console.log("❌ Error Response:", xhr);
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat menghapus barang.', 'error');
                     }
                 });
             }
@@ -241,4 +232,4 @@ $(document).ready(function() {
     });
 });
 </script>
-@endsection
+@endpush

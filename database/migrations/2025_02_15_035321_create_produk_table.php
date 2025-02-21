@@ -9,8 +9,11 @@ return new class extends Migration {
         Schema::create('produk', function (Blueprint $table) {
             $table->id();
             $table->string('nama_produk');
+            $table->decimal('harga', 10, 2);
+            $table->string('foto')->nullable();
             $table->timestamps();
         });
+        
     }
 
     public function down() {

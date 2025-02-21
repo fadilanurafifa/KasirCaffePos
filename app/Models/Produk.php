@@ -9,13 +9,17 @@ class Produk extends Model
 {
     use HasFactory;
 
-    protected $table = 'produk'; // Nama tabel
-    protected $fillable = ['nama_produk']; // Kolom yang bisa diisi
-    
+    protected $table = 'produk';
+    protected $fillable = ['kategori_id', 'nama_produk', 'harga', 'foto'];
     public function barang()
     {
         return $this->hasMany(Barang::class, 'produk_id');
     }
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
+    }    
     
 }
 

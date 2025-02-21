@@ -35,19 +35,21 @@ class KategoriController extends Controller
     public function destroy($id)
     {
         try {
-            $kategori = Kategori::findOrFail($id);
-            $kategori->delete();
+            $kategori = Kategori::findOrFail($id); // Cek apakah kategori ada
+            $kategori->delete(); // Hapus kategori
     
             return response()->json([
                 'status' => 'success',
                 'message' => 'Kategori berhasil dihapus!'
             ]);
         } catch (\Exception $e) {
-            \log('error', "Gagal menghapus kategori: " . $e->getMessage());
+            \log("error", "Gagal menghapus kategori: " . $e->getMessage());
             return response()->json([
                 'status' => 'error',
                 'message' => 'Gagal menghapus kategori!'
             ], 500);
         }
     }    
+
+    
 }

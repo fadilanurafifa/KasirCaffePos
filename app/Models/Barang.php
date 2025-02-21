@@ -29,4 +29,18 @@ class Barang extends Model
         return $this->belongsTo(Produk::class, 'produk_id');
     }
     
+    // Relasi: Barang milik satu pemasok
+    public function pemasok() {
+        return $this->belongsTo(Pemasok::class);
+    }
+     // Relasi: Barang dapat masuk ke banyak transaksi penjualan
+     public function penjualan() {
+        return $this->belongsToMany(Penjualan::class, 'detail_penjualan')
+                    ->withPivot('jumlah', 'subtotal')
+                    ->withTimestamps();
+    }
+    public function detail_penjualan()
+    {
+        return $this->hasMany(DetailPenjualan::class);
+    }
 }

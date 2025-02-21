@@ -53,7 +53,4 @@
         padding: 10px;
     }
 }
-.card-body {
-    margin-top: -18px;
-}
 </style>

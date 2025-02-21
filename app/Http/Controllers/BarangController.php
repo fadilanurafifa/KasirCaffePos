@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Kategori;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BarangController extends Controller
 {
@@ -23,16 +24,8 @@ class BarangController extends Controller
     
         return view('admin.barang.index', compact('barang', 'kategori', 'kodeBarang', 'produk'));
     }  
-    public function create()
-    {
-        $produk = Produk::all(); // Ambil semua produk
-        return view('barang.create', compact('produk'));
-    }
-      
 
-    
     // Menyimpan barang baru
-
     public function store(Request $request)
     {
         $request->validate([
@@ -57,7 +50,8 @@ class BarangController extends Controller
     
         return redirect()->back()->with('success', 'Barang berhasil ditambahkan!');
     }
-    
+
+    // Fungsi untuk generate kode barang unik
     private function generateKodeBarang()
     {
         $prefix = 'BRG-';
@@ -75,16 +69,37 @@ class BarangController extends Controller
     
         return $prefix . $newNumber;
     }    
-    
 
     // Menghapus barang
     public function destroy($id)
     {
+        Log::info("🔍 Menerima permintaan hapus barang ID: " . $id);
+    
         try {
-            Barang::findOrFail($id)->delete();
-            return response()->json(['status' => 'success', 'message' => 'Barang berhasil dihapus!']);
+            $barang = Barang::find($id);
+    
+            if (!$barang) {
+                Log::warning("⚠️ Barang dengan ID $id tidak ditemukan!");
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Barang dengan ID $id tidak ditemukan!"
+                ], 404);
+            }
+    
+            $barang->delete();
+            Log::info("✅ Barang ID $id berhasil dihapus!");
+    
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Barang berhasil dihapus!'
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => 'Gagal menghapus barang!'], 500);
+            Log::error("❌ Gagal menghapus barang: " . $e->getMessage());
+    
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menghapus barang! ' . $e->getMessage()
+            ], 500);
         }
     }
 }

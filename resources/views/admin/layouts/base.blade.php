@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <title>SB Admin 2 - @yield('title')</title>
 
@@ -18,10 +21,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('assets/css/sb-admin-2.min.css') }}" rel="stylesheet">
+
+    @stack('style')
 
 </head>
 
@@ -38,7 +43,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fas fa-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">GO'MARKET</div>
+                <div class="sidebar-brand-text mx-3">Caffe Kasir</div>
             </a>
 
             <!-- Divider -->
@@ -63,10 +68,11 @@
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Kategori</span>
-                </a>
+                aria-expanded="true" aria-controls="collapseTwo">
+                 <i class="fas fa-fw fa-tags"></i>
+                 <span>Kategori</span>
+             </a>
+             
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Manajemen Kategori:</h6>
@@ -106,16 +112,29 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSupplier"
-                    aria-expanded="true" aria-controls="collapseUtilities">
-                    <i class="fas fa-fw fa-wrench"></i>
-                    <span>Supplier</span>
-                </a>
+                aria-expanded="true" aria-controls="collapseUtilities">
+                 <i class="fas fa-fw fa-truck"></i>
+                 <span>Supplier</span>
+             </a>             
                 <div id="collapseSupplier" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Barang</h6>
-                        <a class="collapse-item" href="utilities-animation.html">Tambah Barang Produk</a>
-                        <a class="collapse-item" href="utilities-other.html">Data Barang Produk</a>
+                        <h6 class="collapse-header">Manajemen Supplier</h6>
+                        <a class="collapse-item" href="{{ route('pemasok.index') }}">Data Supplier</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePelanggan"
+                aria-expanded="true" aria-controls="collapseUtilities">
+                 <i class="fas fa-fw fa-address-book "></i>
+                 <span>Pelanggan</span>
+             </a>
+                <div id="collapsePelanggan" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Pelanggan</h6>
+                        <a class="collapse-item" href="{{ route('pelanggan.index') }}">Data Pelanggan</a>
                     </div>
                 </div>
             </li>
@@ -125,33 +144,48 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                LAINNYA
+                TRANSAKSI
             </div>
-
             <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePenjualan"
+                aria-expanded="true" aria-controls="collapsePenjualan">
+                 <i class="fas fa-fw fa-shopping-cart"></i>
+                 <span>Penjualan</span>
+             </a>             
+                <div id="collapsePenjualan" class="collapse" aria-labelledby="headingUtilities"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Manajemen Penjualan</h6>
+                        <a class="collapse-item" href="{{ route('penjualan.index') }}">Transaksi Penjualan</a>
+                    </div>
+                </div>
+            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true"
                     aria-controls="collapsePages">
                     <i class="fas fa-fw fa-folder"></i>
-                    <span>Pages</span>
+                    <span>Sistem Akses</span>
                 </a>
                 <div id="collapsePages" class="collapse show" aria-labelledby="headingPages"
-                    data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="login.html">Login</a>
-                        <a class="collapse-item cursor-pointer" href="#">
-                            Logout
-                        </a>
-                        {{-- <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" class="hidden">
-                            @csrf
-                        </form>                                 --}}
-                    </div>
+                data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Login Screens:</h6>
+                    <a class="collapse-item" href="login.html">Login</a>
+                    <a class="collapse-item cursor-pointer" href="#" 
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                     @csrf
+                    </form>                 
                 </div>
+            </div>
+            
             </li>
 
             <!-- Nav Item - Charts -->
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" href="charts.html">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Charts</span></a>
@@ -162,7 +196,7 @@
                 <a class="nav-link" href="tables.html">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Tables</span></a>
-            </li>
+            </li> --}}
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -446,6 +480,8 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('assets/js/sb-admin-2.min.js') }}"></script>
+
+    @stack('script')
 
 </body>
 
