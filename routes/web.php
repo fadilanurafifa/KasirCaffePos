@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\BarangController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PemasokController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\ProdukController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -78,3 +80,7 @@ Route::delete('/pemasok/{id}', [PemasokController::class, 'destroy'])->name('pem
 // penjualan
 Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
 Route::post('/penjualan/store', [PenjualanController::class, 'store'])->name('penjualan.store');
+
+// cart
+Route::post('/cart/tambah', [CartController::class, 'tambahKeCart'])->name('cart.tambah');
+Route::get('/cart', [CartController::class, 'tampilkanCart'])->name('cart.tampilkan');

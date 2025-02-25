@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@caffe.com',
             'password' => Hash::make('password'),
-            'role' => 'admin'
+            'role' => 'admin',
+            'status' => 'aktif'
         ]);
 
         // Tambah akun kasir
@@ -27,7 +28,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'Kasir',
             'email' => 'kasir@caffe.com',
             'password' => Hash::make('password'),
-            'role' => 'kasir'
+            'role' => 'kasir',
+            'status' => 'aktif'
         ]);
     }
 }

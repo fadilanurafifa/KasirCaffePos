@@ -35,6 +35,8 @@ class ProdukController extends Controller
             'kategori_id' => 'nullable|exists:kategori,id',
         ]);
 
+        // dd($request->all());
+
         // Produk::create($request->all());
 
         // Menangani upload foto
@@ -44,6 +46,7 @@ class ProdukController extends Controller
             $file->move(public_path('assets/produk_fotos'), $fileName);
             Produk::create([
                 'nama_produk' => $request->nama_produk,
+                'stok' => $request->stok,
                 'harga' => $request->harga,
                 'foto' => $fileName,
                 'kategori_id' => $request->kategori_id

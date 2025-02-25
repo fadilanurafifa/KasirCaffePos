@@ -15,6 +15,7 @@ class Barang extends Model
         'kode_barang',
         'produk_id', 
         'nama_barang',
+        'kategori_id',
         'satuan',
         'harga_jual',
         'stok'

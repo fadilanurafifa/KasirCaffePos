@@ -18,10 +18,10 @@ class DetailPenjualan extends Model {
     public function barang() {
         return $this->belongsTo(Barang::class, 'barang_id');
     }
+    
     public function produk()
     {
-        return $this->belongsTo(Produk::class);
+        return $this->belongsTo(Produk::class, 'produk_id');
     }
-    
 }
 

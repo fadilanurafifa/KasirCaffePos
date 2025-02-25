@@ -28,6 +28,7 @@ class BarangController extends Controller
     // Menyimpan barang baru
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'produk_id' => 'required|exists:produk,id',
             'nama_barang' => 'required',
@@ -38,6 +39,8 @@ class BarangController extends Controller
     
         // Generate kode barang unik
         $kodeBarang = $this->generateKodeBarang();
+
+        // dd($kodeBarang);
     
         $barang = new Barang();
         $barang->kode_barang = $kodeBarang;

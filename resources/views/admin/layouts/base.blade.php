@@ -100,12 +100,12 @@
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduk"
                 aria-expanded="true" aria-controls="collapseProduk">
                 <i class="fas fa-coffee"></i> <!-- Ganti ikon di sini -->
-                <span>Produk</span>
+                <span>Produk Menu</span>
             </a>            
                 <div id="collapseProduk" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Manajemen Produk</h6>
+                        <h6 class="collapse-header">Manajemen Menu</h6>
                         <a class="collapse-item" href="{{ route('admin.produk.index') }}">Sistem Produk</a>
                     </div>
                 </div>
@@ -431,13 +431,13 @@
             <!-- End of Main Content -->
 
             <!-- Footer -->
-            <footer class="sticky-footer bg-white">
+            {{-- <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
                         <span>Copyright &copy; Your Website 2020</span>
                     </div>
                 </div>
-            </footer>
+            </footer> --}}
             <!-- End of Footer -->
 
         </div>

@@ -10,7 +10,7 @@ class Produk extends Model
     use HasFactory;
 
     protected $table = 'produk';
-    protected $fillable = ['kategori_id', 'nama_produk', 'harga', 'foto'];
+    protected $fillable = ['kategori_id', 'nama_produk', 'harga', 'foto', 'stok'];
     public function barang()
     {
         return $this->hasMany(Barang::class, 'produk_id');
@@ -20,6 +20,10 @@ class Produk extends Model
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }    
+    public function cart()
+    {
+        return $this->hasMany(Cart::class, 'produk_id');
+    }
     
 }
 

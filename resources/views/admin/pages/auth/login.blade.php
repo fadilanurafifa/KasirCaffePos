@@ -32,11 +32,11 @@
             <div class="mb-4">
                 <label for="email" class="block text-gray-700">Email Address</label>
                 <div class="flex items-center border rounded-lg px-3 py-2 bg-gray-100">
-                    <span class="text-gray-500">
+                    {{-- <span class="text-gray-500">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0a2.25 2.25 0 00-2.25-2.25H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0L12 12.75 3.75 6.75" />
                         </svg>
-                    </span>
+                    </span> --}}
                     <input type="email" name="email" required placeholder="Enter your email address" class="w-full bg-transparent outline-none px-2">
                 </div>
             </div>
@@ -64,6 +64,6 @@
             </p>
         </form>
     </div>
-
 </body>
 </html>
+
