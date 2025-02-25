@@ -203,97 +203,46 @@
                         data-harga="{{ $prd->harga }}"
                         data-foto="{{ asset('assets/produk_fotos/' . $prd->foto) }}"
                         data-kategori="{{ strtolower($prd->kategori ? $prd->kategori->nama_kategori : 'tanpa kategori') }}">
-
+            
                         <div class="card border-0 shadow-sm h-100">
                             <img src="{{ asset('assets/produk_fotos/' . $prd->foto) }}" class="card-img-top img-fluid rounded-top" style="height: 120px; object-fit: cover;">
                             <div class="card-body text-center p-2">
                                 <h6 class="card-title text-truncate">{{ $prd->nama_produk }}</h6>
-                                <h6 class="card-title text-truncate">stok {{ $prd->stok }}</h6>
+                                <h6 class="card-title text-truncate">Stok: {{ $prd->stok }}</h6>
+                                <!-- Menampilkan kategori langsung di sini -->
+                                <h5 class="text-muted mt-2" style="font-size: 14px;">
+                                    {{ $prd->kategori ? $prd->kategori->nama_kategori : 'Tanpa Kategori' }}
+                                </h5>
                                 <p class="card-text text-danger fw-bold">Rp{{ number_format($prd->harga, 0, ',', '.') }}</p>
-                                <button class="btn btn-sm btn-success add-to-cart">Tambah</button>
+                                <button class="btn btn-outline-danger hapusProduk">
+                                    <i class="fas fa-trash"></i> 
+                                </button>
                             </div>
                         </div>
                     </div>
                 @endforeach
-            </div>
+            </div>            
         </div>
-
-        <!-- Keranjang Belanja (Kanan, Sejajar Produk) -->
-        <div class="col-lg-3">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white d-flex justify-content-between">
-                    <span>Keranjang (<span id="cart-count">0</span>)</span>
-                    <button class="btn btn-sm btn-light" id="save-order">Save Order</button>
-                </div>
-
-                <div class="card-body p-2">
-                    <ul class="list-group cart-list" style="max-height: 300px; overflow-y: auto;">
-                        <li class="list-group-item text-muted text-center">Keranjang masih kosong</li>
-                    </ul>
-                </div>
-
-                <div class="card-footer">
-                    <p class="mb-1">Total: <span class="float-end" id="total-price">Rp 0</span></p>
-                    <p class="mb-1">Total diskon: <span class="float-end" id="total-discount">Rp 0</span></p>
-                    <div class="d-flex justify-content-between">
-                        <label><input type="checkbox" id="apply-tax"> PPN 10%</label>
-                        <span id="tax-amount">Rp 0</span>
-                    </div>
-                    <hr>
-                    <h5>Sub Total: <span class="float-end text-primary fw-bold" id="subtotal">Rp 0</span></h5>
-                    <div class="d-flex gap-2 mt-2">
-                        <button class="btn btn-success w-100">Simpan Order</button>
-                    
-                        <button type="button" id="btn-bayar" class="btn btn-primary w-100">Bayar Sekarang</button>
-                    </div>                    
-                </div>
+        <!-- Keranjang Belanja (Kanan) -->
+<div class="col-lg-3">
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0"><i class="fas fa-shopping-cart"></i> Keranjang</h6>
+            <button class="btn btn-sm btn-danger" id="clear-cart"><i class="fas fa-trash"></i></button>
+        </div>
+        <ul class="list-group list-group-flush cart-list"></ul>
+        <div class="card-footer d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span>Total:</span>
+                <span id="subtotal" class="fw-bold text-danger">Rp 0</span>
             </div>
-        </div>                    
+            <button class="btn btn-success w-100" id="checkout">Simpan Keranjang</button>
+        </div>
     </div>
 </div>
-    <!-- Modal Detail Produk -->
-    <div class="modal fade" id="detailProdukModal" tabindex="-1" aria-labelledby="detailProdukLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content border-0 shadow-sm rounded-3">
-                
-                <!-- Header Modal -->
-                <div class="modal-header border-bottom">
-                    <h5 class="modal-title fw-semibold text-dark">Detail Produk</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-    
-                <!-- Body Modal -->
-                <div class="modal-body text-center py-4">
-                    <div class="d-flex flex-column align-items-center">
-                        <!-- Foto Produk -->
-                        <img id="detailFotoProduk" src="" alt="Produk" class="img-fluid rounded-2"
-                            style="max-width: 100%; height: 250px; object-fit: cover;">
-    
-                        <!-- Nama Produk -->
-                        <h4 id="detailNamaProduk" class="mt-3 fw-semibold text-dark"></h4>
-    
-                        <!-- Harga Produk -->
-                        <h5 id="detailHargaProduk" class="text-dark fw-normal mt-2"></h5>
-    
-                        <!-- Kategori Produk -->
-                        <span id="detailKategoriProduk" class="text-muted mt-2" style="font-size: 14px;"></span>
-                    </div>
-                </div>
-    
-                <!-- Footer Modal -->
-                <div class="modal-footer border-top">
-                    <!-- Tombol Hapus -->
-                    <button class="btn btn-outline-danger hapusProduk">
-                        <i class="fas fa-trash"></i> Hapus
-                    </button>
-                    <!-- Tombol Tutup -->
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
 
+    </div>
+</div>
     <div class="modal fade" id="tambahProdukModal" tabindex="-1" aria-labelledby="tambahProdukLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -571,215 +520,6 @@
             });
         });
     </script>
-   <script>
-    $(document).ready(function() {
-        let cart = [];
-    
-        // Fungsi untuk update tampilan keranjang
-        function updateCart() {
-            let cartList = $(".cart-list");
-            cartList.empty();
-            let totalPrice = 0, totalDiscount = 0;
-    
-            if (cart.length === 0) {
-                cartList.append('<li class="list-group-item text-muted text-center">Keranjang masih kosong</li>');
-            } else {
-                cart.forEach((item, index) => {
-                    let hargaTotal = (item.harga - item.diskon) * item.jumlah;
-                    totalPrice += hargaTotal;
-                    totalDiscount += item.diskon * item.jumlah;
-    
-                    cartList.append(`
-                        <li class="list-group-item d-flex align-items-center">
-                            <img src="${item.foto}" class="rounded" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;">
-                            <div class="flex-grow-1">
-                                <a href="#" class="fw-bold">${item.nama}</a>
-                                <small class="d-block text-muted">Diskon: Rp${item.diskon.toLocaleString()}/item</small>
-                                <small>Rp${item.harga.toLocaleString()} x ${item.jumlah} = <strong>Rp${hargaTotal.toLocaleString()}</strong></small>
-                            </div>
-                            <div class="d-flex gap-1">
-                                <button class="btn btn-sm btn-outline-primary btn-minus" data-index="${index}">-</button>
-                                <input type="text" class="form-control form-control-sm text-center" value="${item.jumlah}" style="width: 40px;">
-                                <button class="btn btn-sm btn-outline-primary btn-plus" data-index="${index}">+</button>
-                                <button class="btn btn-sm btn-outline-danger btn-delete" data-index="${index}">🗑</button>
-                            </div>
-                        </li>
-                    `);
-                });
-            }
-    
-            // Update total dan subtotal
-            let tax = $("#apply-tax").prop("checked") ? totalPrice * 0.1 : 0;
-            $("#total-price").text(`Rp ${totalPrice.toLocaleString()}`);
-            $("#total-discount").text(`Rp ${totalDiscount.toLocaleString()}`);
-            $("#tax-amount").text(`Rp ${tax.toLocaleString()}`);
-            $("#subtotal").text(`Rp ${(totalPrice + tax).toLocaleString()}`);
-            $("#cart-count").text(cart.length);
-        }
-    
-        // Tambah produk ke keranjang
-        $(".add-to-cart").click(function() {
-            let parentCard = $(this).closest(".produk-card");
-            let id = parentCard.data("id");
-            let nama = parentCard.data("nama");
-            let harga = parentCard.data("harga");
-            let foto = parentCard.data("foto");
-            let diskon = 1000; // Bisa diganti dengan diskon dari database
-    
-            let item = cart.find(p => p.id === id);
-            if (item) {
-                item.jumlah += 1;
-            } else {
-                cart.push({ id, nama, harga, foto, diskon, jumlah: 1 });
-            }
-            updateCart();
-        });
-    
-        // Hapus produk dari keranjang
-        $(document).on("click", ".btn-delete", function() {
-            let index = $(this).data("index");
-            cart.splice(index, 1);
-            updateCart();
-        });
-    
-        // Tambah atau kurang jumlah produk
-        $(document).on("click", ".btn-plus", function() {
-            let index = $(this).data("index");
-            cart[index].jumlah += 1;
-            updateCart();
-        });
-    
-        $(document).on("click", ".btn-minus", function() {
-            let index = $(this).data("index");
-            if (cart[index].jumlah > 1) {
-                cart[index].jumlah -= 1;
-            } else {
-                cart.splice(index, 1);
-            }
-            updateCart();
-        });
-    
-        // Aktifkan PPN 10%
-        $("#apply-tax").change(updateCart);
-    
-        // Simpan order (hanya alert untuk demo)
-        $("#save-order").click(function() {
-            alert("Order telah disimpan!");
-        });
-    });
-    document.addEventListener("DOMContentLoaded", function () {
-    const cartList = document.querySelector(".cart-list");
-    const cartCount = document.getElementById("cart-count");
-    const totalPrice = document.getElementById("total-price");
-    const totalDiscount = document.getElementById("total-discount");
-    const applyTaxCheckbox = document.getElementById("apply-tax");
-    const taxAmount = document.getElementById("tax-amount");
-    const subtotal = document.getElementById("subtotal");
-
-    let cartItems = []; // Menyimpan data keranjang
-
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", function (event) {
-            event.stopPropagation(); // Mencegah klik membuka modal atau event lain
-
-            const card = this.closest(".produk-card");
-            const id = card.getAttribute("data-id");
-            const nama = card.getAttribute("data-nama");
-            const harga = parseInt(card.getAttribute("data-harga"));
-            const foto = card.getAttribute("data-foto");
-
-            // Cek apakah produk sudah ada di keranjang
-            let existingItem = cartItems.find(item => item.id === id);
-
-            if (existingItem) {
-                existingItem.jumlah++; // Tambah jumlah jika sudah ada
-            } else {
-                cartItems.push({ id, nama, harga, foto, jumlah: 1 }); // Tambah produk baru
-            }
-
-            updateCartDisplay(); // Perbarui tampilan keranjang
-        });
-    });
-
-    function updateCartDisplay() {
-        cartList.innerHTML = ""; // Bersihkan tampilan keranjang
-        let totalHarga = 0;
-        let totalDiskon = 0;
-        let taxValue = 0;
-
-        cartItems.forEach(item => {
-            totalHarga += item.harga * item.jumlah;
-            totalDiskon += item.jumlah * 1000; // Contoh diskon Rp 1000/item
-
-            const listItem = document.createElement("li");
-            listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
-            listItem.innerHTML = `
-                <div>
-                    <p class="mb-0 fw-bold">${item.nama}</p>
-                    <small>Rp${item.harga.toLocaleString()} x ${item.jumlah} = <strong>Rp${(item.harga * item.jumlah).toLocaleString()}</strong></small>
-                </div>
-                <div>
-                    <button class="btn btn-sm btn-outline-secondary decrease-qty" data-id="${item.id}">-</button>
-                    <span class="mx-2">${item.jumlah}</span>
-                    <button class="btn btn-sm btn-outline-primary increase-qty" data-id="${item.id}">+</button>
-                    <button class="btn btn-sm btn-danger remove-item" data-id="${item.id}">&times;</button>
-                </div>
-            `;
-            cartList.appendChild(listItem);
-        });
-
-        // Perhitungan pajak jika dicentang
-        if (applyTaxCheckbox.checked) {
-            taxValue = totalHarga * 0.1;
-        }
-
-        // Update tampilan
-        cartCount.textContent = cartItems.length;
-        totalPrice.textContent = `Rp ${totalHarga.toLocaleString()}`;
-        totalDiscount.textContent = `Rp ${totalDiskon.toLocaleString()}`;
-        taxAmount.textContent = `Rp ${taxValue.toLocaleString()}`;
-        subtotal.textContent = `Rp ${(totalHarga - totalDiskon + taxValue).toLocaleString()}`;
-
-        // Event untuk hapus item dari keranjang
-        document.querySelectorAll(".remove-item").forEach(button => {
-            button.addEventListener("click", function () {
-                const id = this.getAttribute("data-id");
-                cartItems = cartItems.filter(item => item.id !== id);
-                updateCartDisplay();
-            });
-        });
-
-        // Event untuk menambah jumlah item
-        document.querySelectorAll(".increase-qty").forEach(button => {
-            button.addEventListener("click", function () {
-                const id = this.getAttribute("data-id");
-                let item = cartItems.find(item => item.id === id);
-                if (item) {
-                    item.jumlah++;
-                    updateCartDisplay();
-                }
-            });
-        });
-
-        // Event untuk mengurangi jumlah item
-        document.querySelectorAll(".decrease-qty").forEach(button => {
-            button.addEventListener("click", function () {
-                const id = this.getAttribute("data-id");
-                let item = cartItems.find(item => item.id === id);
-                if (item && item.jumlah > 1) {
-                    item.jumlah--;
-                } else {
-                    cartItems = cartItems.filter(item => item.id !== id); // Hapus jika jumlah 0
-                }
-                updateCartDisplay();
-            });
-        });
-    }
-
-    // Event listener untuk checkbox pajak
-    applyTaxCheckbox.addEventListener("change", updateCartDisplay);
-});
-    </script>
     <script>
             document.addEventListener("DOMContentLoaded", function () {
     const filterButtons = document.querySelectorAll(".kategori-filter");
@@ -824,60 +564,118 @@
         });
     });
     </script>
-    <script>
-        document.getElementById("checkout-form").addEventListener("submit", function(event) {
-            event.preventDefault(); // Mencegah form submit secara default
-        
-            let formData = new FormData(this);
-        
-            fetch(this.action, {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.redirect) {
-                    window.location.href = data.redirect; // Redirect ke halaman penjualan setelah transaksi sukses
-                } else {
-                    alert("Gagal: " + (data.message || "Transaksi gagal!"));
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("Terjadi kesalahan, coba lagi!");
-            });
-        });
-        </script>
-        <!-- Tambahkan FontAwesome untuk ikon filter jika belum ada -->
-<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 
 <script>
-document.getElementById("btnFilter").addEventListener("click", function () {
-    let searchText = document.getElementById("searchProduk").value.toLowerCase();
-    console.log("Filter produk berdasarkan:", searchText);
-});
-</script>
-<script>
-    document.getElementById('btn-bayar').addEventListener('click', function () {
-        let keranjang = [];
-    
-        document.querySelectorAll('.cart-list li').forEach(item => {
-            keranjang.push({
-                namaProduk: item.dataset.nama,  // Pastikan dataset.nama ada
-                harga: parseFloat(item.dataset.harga),  // Pastikan dataset.harga ada
-                jumlah: parseInt(item.dataset.jumlah)  // Pastikan dataset.jumlah ada
+    $(document).ready(function () {
+        let cart = [];
+
+        function updateCart() {
+            let cartList = $('.cart-list');
+            cartList.empty();
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                let subtotal = item.harga * item.qty;
+                total += subtotal;
+
+                cartList.append(`
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <img src="${item.foto}" width="40" height="40">
+                        <span class="flex-grow-1 ms-2">${item.nama} x${item.qty}</span>
+                        <span class="fw-bold text-danger">Rp${subtotal.toLocaleString()}</span>
+                        <button class="btn btn-sm btn-outline-danger remove-item" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </li>
+                `);
+            });
+
+            $('#subtotal').text(`Rp${total.toLocaleString()}`);
+        }
+
+        // Tambah ke Keranjang
+        $('.produk-card').click(function () {
+            let id = $(this).data('id');
+            let nama = $(this).data('nama');
+            let harga = $(this).data('harga');
+            let foto = $(this).data('foto');
+
+            let existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ id, nama, harga, foto, qty: 1 });
+            }
+
+            updateCart();
+        });
+
+        // Hapus Item dari Keranjang
+        $(document).on('click', '.remove-item', function () {
+            let index = $(this).data('index');
+            cart.splice(index, 1);
+            updateCart();
+        });
+
+        // Hapus Semua Item
+        $('#clear-cart').click(function () {
+            cart = [];
+            updateCart();
+        });
+
+        // Checkout (simulasi)
+        $('#checkout').click(function () {
+            if (cart.length === 0) {
+                alert('Keranjang kosong!');
+                return;
+            }
+
+            alert('Checkout berhasil! Pesanan diproses.');
+            cart = [];
+            updateCart();
+        });
+    });
+
+    $(document).ready(function() {
+    $("#checkout").click(function() {
+        let cartItems = [];
+
+        $(".cart-list .cart-item").each(function() {
+            let produk_id = $(this).data("id");
+            let pelanggan_id = $(this).data("pelanggan-id") || null; // Bisa null jika tidak ada pelanggan
+            let qyt = parseInt($(this).find(".cart-quantity").text()); // Ambil jumlah produk
+
+            cartItems.push({
+                produk_id: produk_id,
+                pelanggan_id: pelanggan_id,
+                qyt: qyt
             });
         });
-    
-        let url = "{{ route('penjualan.index') }}";
-        let params = new URLSearchParams();
-        params.append('keranjang', JSON.stringify(keranjang));
-    
-        window.location.href = `${url}?${params.toString()}`;
+
+        if (cartItems.length === 0) {
+            alert("Keranjang masih kosong!");
+            return;
+        }
+
+        $.ajax({
+            url: "/cart/store", // Sesuaikan dengan route yang benar
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                produk_id: cartItems[0].produk_id,  // Kirim hanya satu produk untuk contoh
+                pelanggan_id: cartItems[0].pelanggan_id,
+                qyt: cartItems[0].qyt
+            },
+            success: function(response) {
+                alert(response.message);
+                window.location.href = "{{ route('penjualan.index') }}"; // Redirect setelah berhasil
+            },
+            error: function(xhr) {
+                alert("Terjadi kesalahan, coba lagi!");
+            }
+        });
     });
-    </script>
-    
+});
+</script>
+
 @endpush

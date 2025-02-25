@@ -12,8 +12,6 @@ class PenjualanController extends Controller
 {
     public function index(Request $request)
     {
-        dd($request->all());
-
 
         $keranjang = json_decode($request->query('keranjang'), true);
     

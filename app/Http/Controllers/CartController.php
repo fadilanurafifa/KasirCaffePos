@@ -4,39 +4,38 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
-use App\Models\Produk;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
-{
 
-    public function tambahKeCart(Request $request)
+{
+    public function store(Request $request)
     {
-        // Validasi input
+        $userId = Auth::id(); // Ambil ID user yang sedang login
+    
+        dd($request->all()); // Debugging untuk melihat data yang dikirim
+    
+        // Validasi data yang diterima dari frontend
         $request->validate([
-            'produk_id' => 'required|exists:produk,id'
+            'produk_id' => 'required|integer',
+            'pelanggan_id' => 'nullable|integer',
+            'qyt' => 'required|integer|min:1',
         ]);
     
-        // Ambil produk berdasarkan ID, jika tidak ditemukan return error
-        $produk = Produk::where('id', $request->produk_id)->first();
+        // Simpan produk ke dalam tabel cart
+        $cart = Cart::create([
+            'user_id' => $userId,
+            'produk_id' => $request->produk_id,
+            'pelanggan_id' => $request->pelanggan_id,
+            'qyt' => $request->qyt,
+        ]);
     
-        if (!$produk) {
-            return response()->json(['message' => 'Produk tidak ditemukan'], 404);
-        }
-    
-        // Tambahkan produk ke keranjang, update qty jika sudah ada
-        $cartItem = Cart::where('produk_id', $produk->id)->first();
-    
-        if ($cartItem) {
-            $cartItem->update(['qty' => $cartItem->qty + 1]);
-        } else {
-            Cart::create([
-                'produk_id' => $produk->id,
-                'qty' => 1
-            ]);
-        }
-    
-        return response()->json(['message' => 'Produk berhasil ditambahkan ke keranjang']);
+        return response()->json([
+            'success' => true,
+            'message' => 'Produk berhasil ditambahkan ke keranjang!',
+            'cart' => $cart
+        ]);
     }
     
 }
+

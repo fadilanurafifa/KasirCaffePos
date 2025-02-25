@@ -81,6 +81,6 @@ Route::delete('/pemasok/{id}', [PemasokController::class, 'destroy'])->name('pem
 Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
 Route::post('/penjualan/store', [PenjualanController::class, 'store'])->name('penjualan.store');
 
-// cart
-Route::post('/cart/tambah', [CartController::class, 'tambahKeCart'])->name('cart.tambah');
-Route::get('/cart', [CartController::class, 'tampilkanCart'])->name('cart.tampilkan');
+// carts
+Route::post('/cart/store', [CartController::class, 'store'])->name('cart.store');
+
